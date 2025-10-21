@@ -8,8 +8,8 @@ from pathlib import Path
 from unittest.mock import patch
 import pandas as pd
 
-from sentientresearchagent.hierarchical_agent_framework.toolkits.base import BaseDataToolkit
-from sentientresearchagent.hierarchical_agent_framework.toolkits.utils import DataValidator
+from ..base import BaseDataToolkit
+from ..utils import DataValidator
 
 
 class TestInitialization:

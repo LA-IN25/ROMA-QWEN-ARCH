@@ -31,7 +31,7 @@ def mock_arkham_dependencies():
 
 
 # Import after mocking
-from sentientresearchagent.hierarchical_agent_framework.toolkits.data.arkham_toolkit import ArkhamToolkit, SupportedChain
+from ..data.arkham_toolkit import ArkhamToolkit, SupportedChain
 
 
 class TestArkhamToolkitInitialization:

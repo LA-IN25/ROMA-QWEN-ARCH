@@ -30,7 +30,7 @@ def mock_coingecko_dependencies():
         yield
 
 # Import after mocking
-from sentientresearchagent.hierarchical_agent_framework.toolkits.data.coingecko_toolkit import (
+from ..data.coingecko_toolkit import (
     CoinGeckoToolkit, VsCurrency, CoinPlatform
 )
 

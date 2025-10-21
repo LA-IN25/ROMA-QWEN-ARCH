@@ -5,7 +5,7 @@ import numpy as np
 import math
 from unittest.mock import patch
 
-from sentientresearchagent.hierarchical_agent_framework.toolkits.utils.statistics import StatisticalAnalyzer
+from ..utils.statistics import StatisticalAnalyzer
 
 
 class TestStatisticalAnalyzerValidation:

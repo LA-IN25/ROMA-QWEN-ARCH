@@ -1,3 +1,4 @@
+import os
 from agno.agent import Agent
 from agno.models.litellm import LiteLLM # Or your preferred Agno model wrapper
 from loguru import logger
@@ -22,10 +23,11 @@ except ImportError:
     NODE_TYPES_STR = "'PLAN', 'EXECUTE', 'AGGREGATE'"
 
 # --- Plan Modifier Agent Definition ---
+COMPLEX_MODEL_ID = "openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
 
 PLAN_MODIFIER_AGENT_NAME = "PlanModifier_Agno"
 # Consider using a highly capable model for plan modification, as it's a complex reasoning task.
-PLAN_MODIFIER_MODEL_NAME = "openrouter/anthropic/claude-4-sonnet"
+PLAN_MODIFIER_MODEL_NAME = COMPLEX_MODEL_ID
 
 # System prompt tailored for plan modification
 PLAN_MODIFIER_SYSTEM_PROMPT = """
@@ -80,6 +82,8 @@ try:
 
     model_instance = LiteLLM(
         id=PLAN_MODIFIER_MODEL_NAME,
+        provider="openai",
+        api_base=os.getenv("OPENAI_API_BASE"),
     )
 
 

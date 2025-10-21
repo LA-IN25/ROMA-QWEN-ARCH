@@ -20,17 +20,19 @@ Output only the summarized text. Do NOT include any preambles, apologies, or sel
 """
 
 try:
-    context_summarizer_agno_agent = AgnoAgent(
-        model=LiteLLM(
-            id=SIMPLE_MODEL_ID,
-            provider="openai",
-            api_base=os.getenv("OPENAI_API_BASE")
-        ),
-        system_message=SUMMARIZER_SYSTEM_MESSAGE,
-        name="ContextSummarizer_Agno"
-        # No specific response_model needed, expects a plain string output
+    model_instance = LiteLLM(
+        id=COMPLEX_MODEL_ID,
+        provider=os.getenv("LLM_PROVIDER", "openai"),
+        api_base=os.getenv("OPENAI_API_BASE", None),
     )
-    logger.info(f"Successfully initialized ContextSummarizer_Agno with model {SIMPLE_MODEL_ID}")
+
+    context_summarizer_agno_agent = AgnoAgent(
+        name="ContextSummarizer_Agno",
+        model=model_instance,
+        system_message=SUMMARIZER_SYSTEM_MESSAGE
+    )
+
+    logger.info(f"Successfully initialized ContextSummarizer_Agno with model {COMPLEX_MODEL_ID}")
 except Exception as e:
     logger.error(f"Failed to initialize ContextSummarizer_Agno: {e}")
     context_summarizer_agno_agent = None # Ensure it's None if init fails

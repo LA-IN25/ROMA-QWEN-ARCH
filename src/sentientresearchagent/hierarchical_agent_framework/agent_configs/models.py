@@ -10,6 +10,7 @@ from typing import Dict, Any, Optional, List, Union, Literal, Type
 from pydantic import BaseModel, Field, field_validator, model_validator, ConfigDict
 from pathlib import Path
 import os
+from loguru import logger
 
 # Import existing types from the framework
 from sentientresearchagent.hierarchical_agent_framework.types import TaskType, TaskStatus, NodeType
@@ -78,6 +79,19 @@ class ModelConfig(BaseModel):
     @model_validator(mode='after')
     def validate_environment(self):
         """Validate that required environment variables are set."""
+        # --- ADD THIS BLOCK ---
+        # Check for local server override (e.g., LM Studio)
+        # If OPENAI_API_BASE_URL is set, we assume a local-first setup.
+        if os.getenv("OPENAI_API_BASE_URL"):
+            if self.provider == "litellm":
+                logger.info(f"Local server detected at {os.getenv('OPENAI_API_BASE_URL')}. Skipping cloud API key validation for litellm.")
+                return self
+            if self.provider == "openai":
+                logger.info(f"Local server detected at {os.getenv('OPENAI_API_BASE_URL')}. Skipping cloud API key validation for openai provider.")
+                return self
+        # --- END OF BLOCK ---
+
+        # The rest of the original function follows...
         provider = self.provider.lower() if self.provider else ""
         model_id = self.model_id or ""
         

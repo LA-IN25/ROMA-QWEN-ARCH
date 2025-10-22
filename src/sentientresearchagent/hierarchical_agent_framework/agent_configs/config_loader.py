@@ -1,260 +1,127 @@
 """
-Agent Configuration Loader
+Configuration Loader for Agents and Profiles
 
-Loads agent configurations from YAML files with comprehensive Pydantic validation.
-Leverages structured Pydantic models for type safety and validation.
+This module handles loading, validating, and caching of agent and profile configurations
+from YAML files. It uses Pydantic models for robust validation.
 """
 
-import os
-import importlib
+import yaml
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from loguru import logger
-from .models import validate_agents_yaml, validate_agent_config, AgentConfig, AgentsYAMLConfig
+import os  # Import the 'os' module
 
-try:
-    from omegaconf import OmegaConf, DictConfig
-except ImportError:
-    logger.error("OmegaConf not installed. Please install with: pip install omegaconf>=2.3.0")
-    raise
+from .models import AgentsYAMLConfig, ProfileYAMLConfig, validate_agents_yaml, validate_profile_yaml
+
+# A simple in-memory cache for loaded configurations
+_config_cache: Dict[Path, Any] = {}
 
 
 class AgentConfigLoader:
-    """Loads and validates agent configurations from YAML files with comprehensive Pydantic validation."""
+    """Loads, validates, and provides access to agent configurations."""
     
-    def __init__(self, config_dir: Optional[Path] = None):
+    def __init__(self, config_path: Path):
         """
-        Initialize the config loader with validation.
+        Initialize the loader with the path to the main agents.yaml file.
         
         Args:
-            config_dir: Directory containing agent configuration files.
-                       If None, uses the directory containing this file.
+            config_path: Path to the agents.yaml file
         """
-        if config_dir is None:
-            config_dir = Path(__file__).parent
+        if not config_path.is_file():
+            raise FileNotFoundError(f"Agent configuration file not found: {config_path}")
+        self.config_path = config_path
         
-        self.config_dir = Path(config_dir)
-        self.agents_config_file = self.config_dir / "agents.yaml"
-        
-        # Validate config directory exists
-        if not self.config_dir.exists():
-            raise FileNotFoundError(f"Config directory not found: {self.config_dir}")
-        
-        if not self.agents_config_file.exists():
-            raise FileNotFoundError(f"Agents config file not found: {self.agents_config_file}")
-        
-        # Cache for validated configurations
-        self._config_cache: Optional[AgentsYAMLConfig] = None
-    
-    def load_config(self) -> DictConfig:
+    def _load_yaml(self, path: Path) -> Dict[str, Any]:
         """
-        Load and validate agent configuration from YAML with caching.
+        Load YAML file content with environment variable substitution.
+        
+        Args:
+            path: Path to the YAML file
+            
+        Returns:
+            Loaded YAML content as a dictionary
+        """
+        if path in _config_cache:
+            logger.debug(f"Loading cached config from {path}")
+            return _config_cache[path]
+            
+        logger.info(f"Loading agent configuration from: {path}")
+        
+        try:
+            # Read the raw YAML file content as a string
+            raw_content = path.read_text()
+            
+            # Get the model ID from environment variable, with a fallback
+            local_model_id = os.getenv("LOCAL_MODEL_ID", "openai/default-local-model")
+            
+            # Substitute the placeholder with the environment variable
+            # This allows easy model switching from the .env file
+            substituted_content = raw_content.replace("${LOCAL_MODEL_ID}", local_model_id)
+            
+            # Parse the substituted string as YAML
+            config_dict = yaml.safe_load(substituted_content)
+            
+            _config_cache[path] = config_dict
+            return config_dict
+            
+        except yaml.YAMLError as e:
+            logger.error(f"Error parsing YAML file {path}: {e}")
+            raise
+        except Exception as e:
+            logger.error(f"Failed to load or process YAML file {path}: {e}")
+            raise
+
+    def load_config(self) -> AgentsYAMLConfig:
+        """
+        Load and validate the main agents.yaml configuration.
         
         Returns:
-            OmegaConf DictConfig containing the validated agent configuration
+            Validated AgentsYAMLConfig object
         """
         try:
-            logger.info(f"Loading agent configuration from: {self.agents_config_file}")
-            config = OmegaConf.load(self.agents_config_file)
-            
-            # Validate using Pydantic model
-            config_dict = OmegaConf.to_container(config, resolve=True)
+            config_dict = self._load_yaml(self.config_path)
             validated_config = validate_agents_yaml(config_dict)
             
-            # Cache the validated config
-            self._config_cache = validated_config
+            total_agents = len(validated_config.agents)
+            logger.success(f"✅ Loaded and validated configuration for {total_agents} agents")
             
-            logger.info(f"✅ Loaded and validated configuration for {len(validated_config.agents)} agents")
-            
-            # Convert back to DictConfig for compatibility
-            return OmegaConf.create(validated_config.model_dump())
+            return validated_config
             
         except Exception as e:
             logger.error(f"Failed to load agent configuration: {e}")
             raise
-    
-    def get_validated_config(self) -> AgentsYAMLConfig:
-        """
-        Get the validated Pydantic configuration object.
-        
-        Returns:
-            AgentsYAMLConfig instance
-        """
-        if self._config_cache is None:
-            self.load_config()  # This will populate the cache
-        return self._config_cache
-    
-    def resolve_prompt(self, prompt_source: str) -> str:
-        """
-        Resolve a prompt reference to the actual prompt string.
-        
-        Args:
-            prompt_source: Dot-notation path to the prompt (e.g., "prompts.planner_prompts.PLANNER_SYSTEM_MESSAGE")
-        
-        Returns:
-            The resolved prompt string
-        """
-        try:
-            # Split the prompt source into module and attribute
-            parts = prompt_source.split('.')
-            if len(parts) < 2:
-                raise ValueError(f"Invalid prompt source format: {prompt_source}")
-            
-            # Import the module relative to the agent_configs package
-            module_path = '.'.join(parts[:-1])
-            attribute_name = parts[-1]
-            
-            # Import relative to this package
-            full_module_path = f"sentientresearchagent.hierarchical_agent_framework.agent_configs.{module_path}"
-            module = importlib.import_module(full_module_path)
-            
-            # Get the prompt attribute
-            if not hasattr(module, attribute_name):
-                raise AttributeError(f"Module {module_path} has no attribute {attribute_name}")
-            
-            prompt = getattr(module, attribute_name)
-            
-            if not isinstance(prompt, str):
-                raise TypeError(f"Prompt {prompt_source} is not a string, got {type(prompt)}")
-            
-            # Note: Folder context injection is now handled dynamically during execution
-            # in base_adapter.py to support multi-project scenarios properly.
-            # The injection at this level was causing issues because agents are created
-            # globally before any specific project is active.
-            
-            return prompt
-            
-        except Exception as e:
-            logger.error(f"Failed to resolve prompt {prompt_source}: {e}")
-            raise
-    
-    def validate_agent_config(self, agent_config: Dict[str, Any]) -> List[str]:
-        """
-        Validate a single agent configuration using Pydantic with prompt resolution check.
-        
-        Args:
-            agent_config: Agent configuration dictionary to validate
-        
-        Returns:
-            List of validation errors (empty if valid)
-        """
-        errors = []
-        
-        try:
-            # Convert to dict if DictConfig
-            if isinstance(agent_config, DictConfig):
-                agent_config = OmegaConf.to_container(agent_config, resolve=True)
-            
-            # Validate using Pydantic model - this handles most validation
-            validated = validate_agent_config(agent_config)
-            
-            # Additional validation for prompt resolution
-            if validated.prompt_source:
-                try:
-                    self.resolve_prompt(validated.prompt_source)
-                    logger.debug(f"✅ Prompt source validated: {validated.prompt_source}")
-                except Exception as e:
-                    errors.append(f"Invalid prompt_source '{validated.prompt_source}': {e}")
-                    
-        except Exception as e:
-            # Parse Pydantic validation errors
-            if hasattr(e, 'errors'):
-                for error in e.errors():
-                    field_path = ' -> '.join(str(loc) for loc in error['loc'])
-                    errors.append(f"{field_path}: {error['msg']}")
-            else:
-                errors.append(str(e))
-        
-        return errors
-    
-    def validate_config(self, config: DictConfig) -> Dict[str, Any]:
-        """
-        Validate the entire agent configuration using Pydantic models.
-        
-        Args:
-            config: Configuration to validate
-        
-        Returns:
-            Dictionary with validation results
-        """
-        validation_result = {
-            "valid": True,
-            "errors": [],
-            "warnings": [],
-            "agent_count": 0,
-            "enabled_count": 0,
-            "disabled_count": 0
-        }
-        
-        try:
-            # Convert to dict for Pydantic validation
-            config_dict = OmegaConf.to_container(config, resolve=True)
-            
-            # Use Pydantic validation - this handles duplicate names, type checking, etc.
-            validated_config = validate_agents_yaml(config_dict)
-            
-            # Count agents and their status
-            validation_result["agent_count"] = len(validated_config.agents)
-            
-            for agent in validated_config.agents:
-                if agent.enabled:
-                    validation_result["enabled_count"] += 1
-                else:
-                    validation_result["disabled_count"] += 1
-                
-                # Additional validation for prompt resolution
-                if agent.prompt_source:
-                    try:
-                        self.resolve_prompt(agent.prompt_source)
-                        logger.debug(f"✅ Prompt validated for {agent.name}: {agent.prompt_source}")
-                    except Exception as e:
-                        validation_result["errors"].append(
-                            f"Agent {agent.name}: Invalid prompt_source '{agent.prompt_source}': {e}"
-                        )
-            
-            logger.info(f"✅ Configuration validated: {validation_result['enabled_count']} enabled, {validation_result['disabled_count']} disabled agents")
-            
-        except Exception as e:
-            # Parse Pydantic validation errors
-            if hasattr(e, 'errors'):
-                for error in e.errors():
-                    field_path = ' -> '.join(str(loc) for loc in error['loc'])
-                    validation_result["errors"].append(f"{field_path}: {error['msg']}")
-            else:
-                validation_result["errors"].append(str(e))
-        
-        validation_result["valid"] = len(validation_result["errors"]) == 0
-        
-        return validation_result
 
+    def resolve_prompt(self, prompt_source: str) -> Optional[str]:
+        """
+        Dynamically resolve a prompt source string to its content.
+        
+        Args:
+            prompt_source: A string like 'prompts.planner_prompts.SYSTEM_MESSAGE'
+            
+        Returns:
+            The prompt content as a string, or None if not found
+        """
+        if not prompt_source:
+            return None
+            
+        try:
+            # Construct the full module path
+            full_module_path = f"sentientresearchagent.hierarchical_agent_framework.agent_configs.{prompt_source}"
+            
+            parts = full_module_path.split('.')
+            module_name = ".".join(parts[:-1])
+            var_name = parts[-1]
+            
+            # Import the module and get the variable
+            module = __import__(module_name, fromlist=[var_name])
+            prompt_content = getattr(module, var_name, None)
+            
+            if prompt_content is None:
+                logger.warning(f"Could not find prompt variable '{var_name}' in module '{module_name}'")
+            
+            return prompt_content
+            
+        except ImportError:
+            logger.error(f"Could not import prompt module for source: {prompt_source}")
+            return None
 
-def load_agent_configs(config_dir: Optional[Path] = None) -> DictConfig:
-    """
-    Convenience function to load agent configurations.
-    
-    Args:
-        config_dir: Directory containing configuration files
-    
-    Returns:
-        Loaded and validated configuration
-    """
-    loader = AgentConfigLoader(config_dir)
-    config = loader.load_config()
-    
-    # Validate configuration
-    validation = loader.validate_config(config)
-    
-    if not validation["valid"]:
-        logger.error("Agent configuration validation failed:")
-        for error in validation["errors"]:
-            logger.error(f"  - {error}")
-        raise ValueError("Invalid agent configuration")
-    
-    if validation["warnings"]:
-        logger.warning("Agent configuration warnings:")
-        for warning in validation["warnings"]:
-            logger.warning(f"  - {warning}")
-    
-    logger.info(f"✅ Agent configuration validated: {validation['enabled_count']} enabled, {validation['disabled_count']} disabled")
-    
-    return config 

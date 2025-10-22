@@ -129,8 +129,8 @@ import numpy as _np
 from agno.tools import Toolkit
 from loguru import logger
 
-from sentientresearchagent.hierarchical_agent_framework.toolkits.base import BaseDataToolkit, BaseAPIToolkit
-from sentientresearchagent.hierarchical_agent_framework.toolkits.utils import (
+from ..base import BaseDataToolkit, BaseAPIToolkit
+from ..utils import (
     DataHTTPClient, HTTPClientError, StatisticalAnalyzer, DataValidator, FileNameGenerator
 )
 

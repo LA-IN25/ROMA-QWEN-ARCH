@@ -12,7 +12,8 @@ agents:
     description: "Specialized planner for research-focused tasks"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
     prompt_source: "prompts.planner_prompts.PLANNER_SYSTEM_MESSAGE"
     response_model: "PlanOutput"
     registration:
@@ -28,7 +29,10 @@ agents:
     description: "Specialized planner optimized for search-focused research tasks with date awareness and parallel execution"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.planner_prompts.ENHANCED_SEARCH_PLANNER_SYSTEM_MESSAGE"
     response_model: "PlanOutput"
     registration:
@@ -44,7 +48,11 @@ agents:
     description: "Specialized planner optimized for search-focused research tasks with date awareness and parallel execution"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
+      # temperature: 0.7
     prompt_source: "prompts.planner_prompts.ENHANCED_THINK_PLANNER_SYSTEM_MESSAGE"
     response_model: "PlanOutput"
     registration:
@@ -60,7 +68,12 @@ agents:
     description: "Specialized planner optimized for search-focused research tasks with date awareness and parallel execution"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+      # temperature: 0.7
+    # agno_params:
+    #   reasoning: true
+      # temperature: 0.7
     prompt_source: "prompts.planner_prompts.ENHANCED_WRITE_PLANNER_SYSTEM_MESSAGE"
     response_model: "PlanOutput"
     registration:
@@ -76,7 +89,9 @@ agents:
     description: "Master planner specialized in high-level research project decomposition and strategy"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+      # temperature: 0.7
     prompt_source: "prompts.planner_prompts.DEEP_RESEARCH_PLANNER_SYSTEM_MESSAGE"
     response_model: "PlanOutput"
     registration:
@@ -92,7 +107,11 @@ agents:
     description: "Master planner specialized in high-level research project decomposition and strategy"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
+      # temperature: 0.7
     prompt_source: "prompts.planner_prompts.GENERAL_TASK_SOLVER_SYSTEM_MESSAGE"
     response_model: "PlanOutput"
     registration:
@@ -112,7 +131,8 @@ agents:
     description: "LLM-based search executor with web search tools"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
     prompt_source: "prompts.executor_prompts.SEARCH_EXECUTOR_SYSTEM_MESSAGE"
     response_model: "WebSearchResultsOutput"
     tools: ["web_search"]
@@ -126,7 +146,10 @@ agents:
     description: "Performs Analysis and Synthesis of information"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.executor_prompts.REASONING_EXECUTOR_SYSTEM_MESSAGE"
     tools: 
       - name: "PythonTools"
@@ -146,7 +169,10 @@ agents:
     description: "Writes detailed reports based on provided context"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.executor_prompts.BASIC_REPORT_WRITER_SYSTEM_MESSAGE"
     registration:
       action_keys:
@@ -161,7 +187,10 @@ agents:
     description: "Intelligent searcher that combines AI-powered search with Wikipedia"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.executor_prompts.SMART_WEB_SEARCHER_SYSTEM_MESSAGE"
     tools: ["web_search"]
     registration:
@@ -190,8 +219,10 @@ agents:
     adapter_class: "ExaCustomSearchAdapter" # <-- TYPO FIXED HERE
     description: "Comprehensive search using Exa API with LiteLLM processing - prioritizes reliable sources"
     adapter_params:
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
-      num_results: 5
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+      num_results: 5      # Number of Exa search results to retrieve
+      # include_domains: ["en.wikipedia.org", "imdb.com"]
     registration:
       action_keys:
         - action_verb: "execute"
@@ -209,7 +240,8 @@ agents:
     description: "Synthesizes results from multiple child tasks"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
     prompt_source: "prompts.aggregator_prompts.DEFAULT_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       action_keys:
@@ -224,7 +256,10 @@ agents:
     description: "Specialized aggregator for combining search results with deduplication and relevance ranking"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.SEARCH_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       action_keys:
@@ -239,7 +274,10 @@ agents:
     description: "Specialized aggregator for synthesizing analytical outputs and drawing logical conclusions"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.THINK_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       action_keys:
@@ -254,7 +292,8 @@ agents:
     description: "Specialized aggregator for combining written content with focus on narrative flow and coherence"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
     prompt_source: "prompts.aggregator_prompts.WRITE_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       action_keys:
@@ -269,7 +308,8 @@ agents:
     description: "Master aggregator for root-level research tasks with executive synthesis and strategic recommendations"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
     prompt_source: "prompts.aggregator_prompts.ROOT_RESEARCH_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       named_keys: ["RootResearchAggregator", "root_research_ aggregator"]
@@ -281,7 +321,10 @@ agents:
     description: "Master aggregator for root-level analysis tasks with decisive conclusions and strategic recommendations"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.ROOT_ANALYSIS_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       named_keys: ["RootAnalysisAggregator", "root_analysis_aggregator"]
@@ -293,7 +336,10 @@ agents:
     description: "Master aggregator for root-level general tasks with comprehensive synthesis and actionable insights"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.ROOT_GENERAL_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       named_keys: ["RootGeneralAggregator", "root_general_aggregator"]
@@ -309,7 +355,10 @@ agents:
     description: "Specialized planner for cryptocurrency and DeFi analytics with deep domain expertise"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.planner_prompts.CRYPTO_ANALYTICS_PLANNER_SYSTEM_MESSAGE"
     response_model: "PlanOutput"
     registration:
@@ -325,7 +374,10 @@ agents:
     description: "Specialized planner for crypto-specific search tasks optimized for blockchain data retrieval"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.planner_prompts.CRYPTO_SEARCH_PLANNER_SYSTEM_MESSAGE"
     response_model: "PlanOutput"
     registration:
@@ -341,7 +393,10 @@ agents:
     description: "Advanced crypto market analyst for technical analysis and on-chain metrics"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.executor_prompts.CRYPTO_MARKET_ANALYZER_SYSTEM_MESSAGE"
     tools: 
       - "ReasoningTools"
@@ -424,7 +479,10 @@ agents:
     description: "Comprehensive crypto research executor for deep blockchain and DeFi analysis"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.executor_prompts.CRYPTO_RESEARCH_EXECUTOR_SYSTEM_MESSAGE"
     registration:
       action_keys:
@@ -439,7 +497,10 @@ agents:
     description: "Specialized aggregator for crypto data synthesis and market insights"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.CRYPTO_ANALYTICS_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       named_keys: ["CryptoAnalyticsAggregator", "crypto_aggregator"]
@@ -451,7 +512,10 @@ agents:
     description: "Master aggregator for executive-level crypto research synthesis and strategic insights"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_.
+    #   reasoning: true
     prompt_source: "prompts.aggregator_prompts.CRYPTO_ROOT_AGGREGATOR_SYSTEM_MESSAGE"
     registration:
       named_keys: ["CryptoRootAggregator", "crypto_root_aggregator"]
@@ -467,7 +531,8 @@ agents:
     description: "Determines if tasks are atomic or need further planning"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
     prompt_source: "prompts.atomizer_prompts.ATOMIZER_SYSTEM_MESSAGE"
     response_model: "AtomizerOutput"
     registration:
@@ -483,7 +548,10 @@ agents:
     description: "Modifies existing plans based on user feedback"
     model:
       provider: "litellm"
-      model_id: "openai/openai-gpt-oss-20b-abliterated-uncensored-neo-imatrix"
+      model_id: "qwen3-stargate-sg1-uncensored-abliterated-8b-i1"
+      api_base: "http://127.0.0.1:1234/v1"
+    # agno_params:
+    # temperature: 0.7
     prompt_source: "prompts.plan_modifier_prompts.PLAN_MODIFIER_SYSTEM_PROMPT"
     response_model: "PlanOutput"
     registration:
@@ -497,7 +565,16 @@ agents:
 # CONFIGURATION METADATA
 # =============================================================================
 metadata:
-  version: "1.2.0-local"
-  description: "Production agent configuration with local model and full agent compatibility"
-
+  version: "1.0.0"
+  description: "Production agent configuration for Sentient Research Agent"
+  last_updated: "2024-01-01"
+  total_agents: 9
+  migration_status: "integrated_with_legacy"
+  features:
+    - "Structured output support"
+    - "Tool integration" 
+    - "Dynamic prompt resolution"
+    - "Flexible model providers"
+    - "LLM parameter configuration"
+    - "Legacy system compatibility"
 

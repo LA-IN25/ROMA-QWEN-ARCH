@@ -6,7 +6,7 @@ import asyncio
 from unittest.mock import AsyncMock, Mock, patch
 import httpx
 
-from sentientresearchagent.hierarchical_agent_framework.toolkits.utils import (
+from ..utils import (
     DataHTTPClient, HTTPClientError
 )
 

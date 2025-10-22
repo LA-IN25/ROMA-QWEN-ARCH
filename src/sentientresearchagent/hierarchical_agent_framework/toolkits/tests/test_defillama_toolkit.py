@@ -31,7 +31,7 @@ def mock_defillama_dependencies():
 
 
 # Import after mocking
-from sentientresearchagent.hierarchical_agent_framework.toolkits.data.defillama_toolkit import DefiLlamaToolkit
+from ..data.defillama_toolkit import DefiLlamaToolkit
 
 
 class TestDefiLlamaToolkitInitialization:

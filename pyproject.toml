@@ -46,3 +46,6 @@ build-backend = "pdm.backend"
 
 [tool.pdm]
 distribution = true
+
+[tool.pytest.ini_options]
+pythonpath = "src"

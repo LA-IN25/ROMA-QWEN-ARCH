@@ -29,7 +29,7 @@ def mock_binance_dependencies():
 
 
 # Import after mocking
-from sentientresearchagent.hierarchical_agent_framework.toolkits.data.binance_toolkit import BinanceToolkit
+from ..data.binance_toolkit import BinanceToolkit
 
 
 class TestBinanceToolkitInitialization:

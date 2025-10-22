@@ -36,12 +36,10 @@ from .utils import (
 )
 
 # Specialized data toolkits
-from .data import (
-    BinanceToolkit,
-    CoinGeckoToolkit,
-    ArkhamToolkit,
-    DefiLlamaToolkit,
-)
+from .data.binance_toolkit import BinanceToolkit
+from .data.coingecko_toolkit import CoinGeckoToolkit
+from .data.arkham_toolkit import ArkhamToolkit
+from .data.defillama_toolkit import DefiLlamaToolkit
 
 # Comprehensive exports for easy importing
 __all__ = [

@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:8e778916453b0a603d58206d0c72b6bf4a2292962f946248aa967bdec60fe65e"
+content_hash = "sha256:77b266be2f76f8cc833b406ca79891b8e883055a1f84ef743e5f919d91697150"
 
 [[metadata.targets]]
 requires_python = ">=3.12"
@@ -352,7 +352,7 @@ version = "2.0.0"
 requires_python = ">=3.9"
 summary = "Foreign Function Interface for Python calling C code."
 groups = ["default"]
-marker = "implementation_name == \"pypy\" or platform_python_implementation != \"CPython\""
+marker = "implementation_name == \"pypy\""
 dependencies = [
     "pycparser; implementation_name != \"PyPy\"",
 ]
